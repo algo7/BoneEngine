@@ -8,7 +8,7 @@ points, reverse included, and burns a bone every so often while it does. Only th
 1. Put bone fragments in the hold (Karve, Longship, Drakkar; the Raft has no hold).
 2. Sail. The sail gear is the engine gear: rowing and reverse are the slow burn, half sail a bit more, full sail the
    fast burn. No wind needed.
-3. Watch the count next to the gear icons while you steer, or look at the rudder when you're not.
+3. Watch the count under the wind compass while you steer, or look at the rudder when you're not.
 
 ## Good to Know
 
@@ -17,7 +17,8 @@ points, reverse included, and burns a bone every so often while it does. Only th
   none.
 - One bone or a full hold: same push. More bones just run longer.
 - Out of bones, the boat is back to sails and oars. Drop more in and it picks up again.
-- While someone has the hold open, the engine finishes the bone it has and waits for the next.
+- Browsing your own hold under sail? The engine won't take a new bone until you close it; the one it has keeps
+  pushing.
 
 ## Sailing Stats
 

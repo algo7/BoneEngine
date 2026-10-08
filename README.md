@@ -19,16 +19,19 @@ ship's, so hull and hold share one owner, and opening the hold makes the opener 
 
 Three Harmony postfixes:
 
-- `Ship.CustomFixedUpdate`: every client checks whether the local player is at the rudder without owning the boat and,
-  if nobody has the hold open and the owner has been stable for two seconds, claims it (`ZNetView.ClaimOwnership`, the
-  game's own hand-over). The owner, when steering or when nobody is, runs the engine: with no bone loaded it takes
-  one from the hold through `Inventory.RemoveItem` (the vanilla chest save path, so everyone sees the count; never
-  while the hold is open), then adds an impulse along the boat's forward (backward in reverse) scaled by the gear
-  (1/3, 2/3, 1) and the boat's own `m_sailForceFactor` while the hull is in the water, and drains the loaded bone by
-  the gear. A bone lasts 15 high-gear seconds on the Longship and scales with the same factor on other boats, so
-  burn follows push (Karve 25 s, Drakkar about 9 s).
+- `Ship.CustomFixedUpdate`: every client checks whether the local player is at the rudder without owning the boat
+  and, once the hold has been seen closed and the owner unchanged for two seconds each, claims it
+  (`ZNetView.ClaimOwnership`, the game's own hand-over). The owner, when steering or when nobody is, runs the
+  engine: with no bone loaded it takes one from the hold through `Inventory.RemoveItem` (the vanilla chest save
+  path, so everyone sees the count; never while the hold is open, and only after owning the boat for 1.5 s, so a
+  fresh owner's once-a-second mirror of the hold is current before it is written back), then adds an impulse along
+  the boat's forward (backward in reverse) scaled by the gear (1/3, 2/3, 1) and the boat's own `m_sailForceFactor`
+  while the hull is in the water, and drains the loaded bone by the gear. A bone lasts 15 high-gear seconds on the
+  Longship and scales with the same factor on other boats, so burn follows push (Karve 25 s, Drakkar about 9 s).
+  Losing ownership clears the loaded bone, so a switch costs at most that bone.
 - `ShipControlls.GetHoverText`: the rudder's hover text gains the count.
-- `Hud.UpdateShipHud`: the steering panel gains a text line (a copy of the HUD's health text) with the count.
+- `Hud.UpdateShipHud`: the steering panel gains a text line (a copy of the HUD's health text) with the count and
+  whether the engine is running.
 
 Nothing is saved: no ZDO keys, no items, no prefabs. "How much of the loaded bone is left" is memory in the owner's
 game; any owner change (rudder swap, opening the hold, logout) starts over on a fresh bone, so a switch costs at most
