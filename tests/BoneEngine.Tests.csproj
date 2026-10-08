@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Compile Include="*.cs" />
+    <Compile Include="../src/EngineRules.cs" />
   </ItemGroup>
 
   <ItemGroup>
