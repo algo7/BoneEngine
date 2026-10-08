@@ -67,4 +67,4 @@ with a matching `## X.Y.Z` section in `CHANGELOG.md` releases to GitHub and Thun
 
 ## License
 
-MIT
+[MIT](LICENSE)
