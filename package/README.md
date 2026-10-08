@@ -1,42 +1,47 @@
 # BoneEngine
 
-Bone fragments have a job now. Drop them in your boat's storage and the boat gets an engine: it pushes the way your
-gear points, reverse included, and burns a bone every so often while it does. Only the one steering needs the mod.
+Ever rowed yourself off a beach one stroke at a time, or sailed home into a headwind that never turned? Bone
+fragments have a job now. Drop them in your boat's storage and the boat gets an engine: it pushes both forward and
+in reverse, and burns bones while it does. Only the one steering needs the mod.
 
 ## How to Use
 
-1. Put bone fragments in the boat's storage (Karve, Longship, Drakkar; the Raft has none).
-2. Sail. The sail gear is also the engine gear: rowing and reverse run it low, half sail in the middle, full sail at
-   full. The push works the same in any wind.
+1. Put bone fragments in the boat's storage (Karve, Longship, Drakkar). The Raft has none.
+2. Sail. The engine's power follows the sail setting, and reverse always runs in low: rowing low, half sail in the
+   middle, full sail at full. The push works the same in any wind.
 3. The count shows under the wind compass while you steer, and on the rudder text when you walk up to it.
 
-## Good to Know
+## How Things Behave
 
-- The engine takes one bone out of the storage and runs on it; the next one is taken when that one is used up. The
-  count is therefore what's left to burn, and an active engine at 0 means it's running on its last bone. A moored,
-  stopped or empty boat takes none.
-- One bone or a full storage: the push is the same. More bones only run longer.
-- Out of bones, the boat sails and rows as vanilla. Add bones and the engine picks up again.
-- While your own storage window is open, the engine takes no new bone; the one it has keeps pushing.
+- The engine takes one bone at a time. The count is what's left to burn: an active engine at 0 is on its last bone.
+- A stopped boat consumes none.
+- The amount of bones only determines how long the engine runs. The push is fixed, scaled by the sail setting only.
+- The boat's speed reverts to vanilla if the bones run out. Add more and the engine picks up.
 
 ## Sailing Stats
 
-Top speed on open sea, strong wind, full sail, without → with bones aboard:
+Top speed at full sail, in m/s:
 
-| Boat | Tail or side wind | Headwind |
-|---|---|---|
-| Karve | 4.6 → 7.5 m/s | 2.0 → 6.0 m/s |
-| Longship | 5.9 → 9.7 m/s | 2.0 → 7.7 m/s |
-| Drakkar | 5.5 → 9.0 m/s | 1.6 → 7.1 m/s |
+| Boat | Tail/side wind (vanilla) | Tail/side wind (engine) | Headwind (vanilla) | Headwind (engine) |
+|---|---|---|---|---|
+| Karve | 4.6 | 7.5 | 2.0 | 6.0 |
+| Longship | 5.9 | 9.7 | 2.0 | 7.7 |
+| Drakkar | 5.5 | 9.0 | 1.6 | 7.1 |
 
-In a headwind the sail gives nothing, so the vanilla number is rowing speed.
+Vanilla boats can't sail into a headwind, so the vanilla headwind column is rowing speed. With bones, keep full sail
+up anyway: the engine runs at full power despite the wind.
 
-Burn rates: at full sail the Karve takes a bone every 25 seconds, the Longship every 15, the Drakkar every 9. The
-stronger a boat's engine, the faster it burns. Half sail stretches each bone 1.5×, rowing and reverse 3×.
+How many seconds each bone lasts (heavier boat uses more fuel):
+
+| Boat | Full sail | Half sail | Rowing or reverse |
+|---|---|---|---|
+| Karve | 25 | 37.5 | 75 |
+| Longship | 15 | 22.5 | 45 |
+| Drakkar | 9 | 13 | 26 |
 
 One kilometre of open sea (about one island to the next), minutes:seconds and bones spent:
 
-| Boat | Tail/side wind | Tail/side + bones | Headwind | Headwind + bones |
+| Boat | Tail/side (vanilla) | Tail/side (engine) | Headwind (vanilla) | Headwind (engine) |
 |---|---|---|---|---|
 | Karve | 3:38 | 2:13 (6 bones) | 8:20 rowing | 2:47 (7 bones) |
 | Longship | 2:49 | 1:43 (7 bones) | 8:20 rowing | 2:09 (9 bones) |
@@ -44,36 +49,55 @@ One kilometre of open sea (about one island to the next), minutes:seconds and bo
 
 Against the world itself, on a Longship at full sail with a tail or side wind:
 
-| Trip | Distance | Share of the world | Vanilla | With bones |
+| Trip | Distance | Share of the world | Vanilla | With engine |
 |---|---|---|---|---|
 | Island to island | 1.5 km | about a thirteenth | 4:14 | 2:35 |
 | Spawn to the far biomes (Ashlands, Deep North) | 9 km | just under half | 25:25 | 15:28 |
 | One edge of the world to the other | 20 km | the whole way | 56:30 | 34:22 |
 
-These are straight-line distances; real trips bend around coasts and weather, so expect longer.
+These are straight-line distances. Real trips bend around coasts and weather, so expect longer.
 
-Why not twice as fast? The sea pushes back with the **square** of your speed: going twice as fast costs four times
-the push. The engine adds about one tailwind sail's worth of push on top of whatever your sail is getting, which
-works out to roughly half again your top speed with the wind behind you, and the whole push in a headwind.
+## Engine Power
+
+Water holds a boat back in proportion to the square of its speed. In the real world that is the drag equation:
+
+**drag = 0.5 × water density × drag coefficient × frontal area × speed to the power of 2**
+
+Valheim folds everything except the speed into one drag constant per boat:
+
+**drag = drag constant × speed to the power of 2**
+
+A boat stops speeding up when its push equals the drag, which puts its top speed at:
+
+**top speed = square root of (push / drag constant)**
+
+That is why doubling the push gives about 1.4× the speed, not 2×. The engine pushes about 1.7 times as hard as a
+full sail in a tail or side wind, on top of whatever the sail gives. With the wind behind or beside you that comes to about 1.6×
+the vanilla top speed. In a headwind the engine is the whole push.
+
+The engine's power is fixed on purpose, for two reasons:
+
+- **Immersion.** The world should still feel big. The far biomes remain a quarter-hour voyage, not a quick hop.
+- **Performance.** The game builds the land ahead of you in 64 m squares, and a faster boat makes it build them more
+  often. Near busy coasts like the Black Forest, that shows up as stutter on lower-end PCs.
 
 ## Multiplayer
 
-Everyone sees the faster boat; nothing to install on the server. The engine runs in the game of whoever is steering,
-so the one at the rudder needs the mod. A friend without it steers at vanilla speed and the bones stay put. Whenever
-the boat changes hands, by someone taking the rudder or opening the storage, the engine starts over on a fresh bone,
-so a switch costs at most the bone it was already burning. A friend opening the storage pauses the engine until a
-short moment after they close it.
+Everyone sees the faster boat. Nothing to install on the server. The engine runs in the steerer's game, so the one
+at the rudder needs the mod. A friend without it steers at vanilla speed and burns nothing. Changing hands, by
+taking the rudder or opening the storage, costs at most the bone being burned. A friend opening the storage pauses
+the engine until shortly after they close it.
 
 ## Compatibility
 
-- Built and tested for Valheim 1.0 (Deep North), on Linux; no OS-specific code.
+- Built and tested for Valheim 1.0 (Deep North), on Linux, with no OS-specific code.
 - Works on top of mods that change sail or oar strength (FasterBoats, ShipConfig): the engine's push adds to theirs.
 - Modded boats get an engine when they're built like the vanilla ones, with the storage part of the ship itself and a
   working sail.
 
 ## Uninstalling
 
-Nothing is saved. Your bones stay in the storage; the boat is just a boat again.
+Nothing is saved. Your bones stay in the storage, and the boat is just a boat again.
 
 ## Links
 

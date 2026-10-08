@@ -9,7 +9,7 @@
     <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
     <!-- Thunderstore namespace / r2modman author; the package's manifest.json is generated from these (Package target). -->
     <ModAuthor>Algo7</ModAuthor>
-    <ModDescription>Bone fragments in a boat's hold are engine fuel: the boat pushes in its gear's direction, reverse included, and burns bones while it does. Vanilla content only.</ModDescription>
+    <ModDescription>Bone fragments in a boat's storage are engine fuel: the boat pushes both forward and in reverse and burns bones while it does. Vanilla content only.</ModDescription>
     <ModWebsite>https://github.com/algo7/BoneEngine</ModWebsite>
     <BepInExPackDependency>denikson-BepInExPack_Valheim-5.4.2351</BepInExPackDependency>
     <LangVersion>latest</LangVersion>
