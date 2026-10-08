@@ -25,6 +25,10 @@ namespace BoneEngine
         private static bool s_lastRunning;
         private static bool s_off;
 
+        /// <summary>The game's gold readout colour (armour, carry weight), read from the inventory's weight label; a close fallback.</summary>
+        private static string s_goldHex;
+        private const string FallbackGoldHex = "#FFD23C";
+
         [HarmonyPatch(typeof(Hud), "UpdateShipHud")]
         [HarmonyPostfix]
         private static void UpdateShipHud(Hud __instance, Player player)
@@ -57,7 +61,7 @@ namespace BoneEngine
                 {
                     s_lastCount = bones;
                     s_lastRunning = running;
-                    s_text.text = EngineRules.PanelLine(Localization.instance.Localize(EngineRules.FuelItem), bones, running);
+                    s_text.text = EngineRules.PanelLine(Localization.instance.Localize(EngineRules.FuelItem), bones, running, GoldHex());
                 }
                 if (!s_text.gameObject.activeSelf) s_text.gameObject.SetActive(true);
             }
@@ -65,6 +69,16 @@ namespace BoneEngine
             {
                 TurnOff($"The steering panel's bone count failed; the panel is vanilla from here: {e}");
             }
+        }
+
+        /// <summary>The gold of the inventory's weight readout, as a "#RRGGBB" tag value; read once, fallback if the GUI isn't there.</summary>
+        private static string GoldHex()
+        {
+            if (s_goldHex != null) return s_goldHex;
+            var gui = InventoryGui.instance;
+            var label = gui != null ? gui.m_weight : null;
+            s_goldHex = label != null ? "#" + ColorUtility.ToHtmlStringRGB(label.color) : FallbackGoldHex;
+            return s_goldHex;
         }
 
         /// <summary>A copy of the health text, a sibling of the wind wheel, centred just below it.</summary>

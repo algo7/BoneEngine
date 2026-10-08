@@ -90,6 +90,8 @@ internal static partial class Tests
         Field(typeof(Hud), "m_shipHudRoot", typeof(GameObject));
         Field(typeof(Hud), "m_shipWindIndicatorRoot", typeof(RectTransform));   // the wind wheel: the count sits under it
         True(typeof(Hud).GetField("m_healthText", Instance)?.FieldType.Name == "TMP_Text", "Hud.m_healthText is a TMP_Text");
+        True(typeof(InventoryGui).GetField("m_weight", Instance)?.FieldType.Name == "TMP_Text", "InventoryGui.m_weight is a TMP_Text (the gold)");
+        True(typeof(InventoryGui).GetProperty("instance", Static)?.PropertyType == typeof(InventoryGui), "InventoryGui.instance");
         Eq(typeof(Ship), typeof(Player).GetMethod("GetControlledShip", Type.EmptyTypes)?.ReturnType, "Player.GetControlledShip()");
     }
 }

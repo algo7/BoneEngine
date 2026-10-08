@@ -99,13 +99,15 @@ namespace BoneEngine
         }
 
         /// <summary>
-        /// The steering panel's text, two short lines (the panel sits at the screen's right edge): the count, then
-        /// whether the engine pushed this tick. The bone in the engine isn't in the count, so "engine running" at 0
-        /// says the boat is on its last bone.
+        /// The steering panel's text, two short lines (the panel sits at the screen's right edge): the count, then the
+        /// engine status, "active" in the game's gold (a TextMeshPro colour tag; goldHex like "#FFD23C") while the
+        /// engine pushed this tick, "idle" plain. The bone in the engine isn't in the count, so "active" at 0 says the
+        /// boat is on its last bone.
         /// </summary>
-        public static string PanelLine(string itemName, int count, bool running)
+        public static string PanelLine(string itemName, int count, bool running, string goldHex)
         {
-            return CountLine(itemName, count) + (running ? "\nengine running" : "\nengine idle");
+            var status = running ? "<color=" + goldHex + ">active</color>" : "idle";
+            return CountLine(itemName, count) + "\nEngine status: " + status;
         }
     }
 }
