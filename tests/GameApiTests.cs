@@ -88,7 +88,7 @@ internal static partial class Tests
         Param(hud, "player", typeof(Player));
         Param(hud, "dt", typeof(float));
         Field(typeof(Hud), "m_shipHudRoot", typeof(GameObject));
-        Field(typeof(Hud), "m_shipControlsRoot", typeof(GameObject));
+        Field(typeof(Hud), "m_shipWindIndicatorRoot", typeof(RectTransform));   // the wind wheel: the count sits under it
         True(typeof(Hud).GetField("m_healthText", Instance)?.FieldType.Name == "TMP_Text", "Hud.m_healthText is a TMP_Text");
         Eq(typeof(Ship), typeof(Player).GetMethod("GetControlledShip", Type.EmptyTypes)?.ReturnType, "Player.GetControlledShip()");
     }

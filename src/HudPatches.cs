@@ -6,17 +6,18 @@ using UnityEngine;
 namespace BoneEngine
 {
     /// <summary>
-    /// The steering panel (sail-gear icons, rudder, wind wheel; shown to the steerer only) gains a "Bone fragments: N"
-    /// line on boats with a hold. The text is a copy of the HUD's health text (same font), made once per HUD (a new
-    /// HUD comes with every world). Updated only when the count changes. On any failure the line is dropped for the
-    /// session (logged once); the panel itself is vanilla.
+    /// The steering panel (shown to the steerer only) gains a "Bone fragments: N" line under the wind wheel on boats
+    /// with a hold. The text is a copy of the HUD's health text (same font), made once per HUD (a new HUD comes with
+    /// every world), parented next to the wheel (not under it: the wheel turns with the ship; not under the ship-wheel
+    /// marker at the rudder: that root is pinned in world-to-screen space and rotates). Updated only when the count
+    /// changes. On any failure the line is dropped for the session (logged once); the panel itself is vanilla.
     /// </summary>
     [HarmonyPatch]
     internal static class HudPatches
     {
-        /// <summary>Where the line sits under the gear icons (panel pixels at the game's reference scale); tuned in game.</summary>
-        private const float LineOffsetY = -70f;
-        private const float LineFontSize = 18f;
+        /// <summary>Gap between the wheel's bottom edge and the line (panel pixels at the game's reference scale); tuned in game.</summary>
+        private const float LineGap = 10f;
+        private const float LineFontSize = 20f;
 
         private static Hud s_hud;
         private static TMP_Text s_text;
@@ -63,13 +64,14 @@ namespace BoneEngine
             }
         }
 
-        /// <summary>A copy of the health text under the panel's controls root, centred below the gear icons.</summary>
+        /// <summary>A copy of the health text, a sibling of the wind wheel, centred just below it.</summary>
         private static TMP_Text MakeLine(Hud hud)
         {
             var template = hud.m_healthText;
-            var root = hud.m_shipControlsRoot;
-            if (template == null || root == null) return null;
-            var line = UnityEngine.Object.Instantiate(template.gameObject, root.transform);
+            var wheel = hud.m_shipWindIndicatorRoot;
+            var parent = wheel != null ? wheel.parent as RectTransform : null;
+            if (template == null || parent == null) return null;
+            var line = UnityEngine.Object.Instantiate(template.gameObject, parent);
             line.name = "BoneEngineCount";
             var text = line.GetComponent<TMP_Text>();
             if (text == null)
@@ -78,11 +80,15 @@ namespace BoneEngine
                 return null;
             }
             var rect = (RectTransform)line.transform;
-            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.anchorMin = wheel.anchorMin;
+            rect.anchorMax = wheel.anchorMax;
             rect.pivot = new Vector2(0.5f, 1f);
-            rect.anchoredPosition = new Vector2(0f, LineOffsetY);
-            rect.sizeDelta = new Vector2(320f, 32f);
+            var wheelBottom = wheel.anchoredPosition.y - wheel.rect.height * (1f - wheel.pivot.y);
+            var wheelCentreX = wheel.anchoredPosition.x + wheel.rect.width * (0.5f - wheel.pivot.x);
+            rect.anchoredPosition = new Vector2(wheelCentreX, wheelBottom - LineGap);
+            rect.sizeDelta = new Vector2(320f, 34f);
             rect.localScale = Vector3.one;
+            rect.localRotation = Quaternion.identity;
             text.alignment = TextAlignmentOptions.Center;
             text.enableAutoSizing = false;
             text.fontSize = LineFontSize;
