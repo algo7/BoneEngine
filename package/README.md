@@ -66,10 +66,10 @@ These are straight-line distances. Real trips bend around coasts and weather, so
 
 ## Engine Power
 
-Water holds a boat back in proportion to the square of its speed. In the real world that is the drag equation:
+Water holds a boat back roughly in proportion to the square of its speed. In the real world that is the drag equation:
 
 ```
-drag = 0.5 × water density × drag coefficient × frontal area × speed to the power of 2
+drag = 0.5 × water density × drag coefficient × hull area under water × speed to the power of 2
 ```
 
 Valheim folds everything except the speed into one drag constant per boat:
