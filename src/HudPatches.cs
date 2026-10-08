@@ -62,6 +62,7 @@ namespace BoneEngine
                     s_lastCount = bones;
                     s_lastRunning = running;
                     s_text.text = EngineRules.PanelLine(Localization.instance.Localize(EngineRules.FuelItem), bones, running, GoldHex());
+                    FitToText(s_text);
                 }
                 if (!s_text.gameObject.activeSelf) s_text.gameObject.SetActive(true);
             }
@@ -107,7 +108,9 @@ namespace BoneEngine
             rect.sizeDelta = new Vector2(420f, 60f);
             rect.localScale = Vector3.one;
             rect.localRotation = Quaternion.identity;
-            text.alignment = TextAlignmentOptions.TopRight;
+            // Lines start flush left inside a box that is exactly as wide as the widest line (FitToText), so the first
+            // characters line up and the box's right edge stays pinned under the wheel.
+            text.alignment = TextAlignmentOptions.TopLeft;
             text.textWrappingMode = TextWrappingModes.NoWrap;
             text.overflowMode = TextOverflowModes.Overflow;
             text.enableAutoSizing = false;
@@ -115,6 +118,13 @@ namespace BoneEngine
             text.color = Color.white;
             text.text = "";
             return text;
+        }
+
+        /// <summary>Size the box to its text (widest line, both lines high), keeping the pivot at the top right.</summary>
+        private static void FitToText(TMP_Text text)
+        {
+            var size = text.GetPreferredValues();
+            ((RectTransform)text.transform).sizeDelta = new Vector2(size.x + 2f, size.y + 2f);
         }
 
         private static void TurnOff(string message)
