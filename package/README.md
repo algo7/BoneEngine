@@ -16,9 +16,35 @@ points, reverse included, and burns a bone every so often while it does. Only th
   what's left to burn, and an active engine at 0 means it's on its last bone. Moored, stopped or empty boats take
   none.
 - One bone or a full hold: same push. More bones just run longer.
-- Bigger boat, bigger appetite: the Karve sips, the Longship drinks, the Drakkar gulps.
 - Out of bones, the boat is back to sails and oars. Drop more in and it picks up again.
 - While someone has the hold open, the engine finishes the bone it has and waits for the next.
+
+## Sailing Stats
+
+Top speed on open sea, strong wind, full sail, without → with bones aboard:
+
+| Boat | Wind behind or beside | Straight into the wind |
+|---|---|---|
+| Karve | 4.6 → 7.5 m/s | 2.0 → 6.0 m/s |
+| Longship | 5.9 → 9.7 m/s | 2.0 → 7.7 m/s |
+| Drakkar | 5.5 → 9.0 m/s | 1.6 → 7.1 m/s |
+
+Into the wind the sail gives nothing, so without bones that number is you rowing.
+
+Bigger boat, bigger appetite: at full sail the Karve burns a bone every 25 seconds, the Longship every 15, the
+Drakkar every 9. Half sail stretches each bone 1.5×, rowing and reverse 3×.
+
+The same stretch of open sea, one kilometre (about one island to the next), minutes:seconds and bones spent:
+
+| Boat | Good wind | Good wind + bones | Headwind | Headwind + bones |
+|---|---|---|---|---|
+| Karve | 3:38 | 2:13 (6 bones) | 8:20 rowing | 2:47 (7 bones) |
+| Longship | 2:49 | 1:43 (7 bones) | 8:20 rowing | 2:09 (9 bones) |
+| Drakkar | 3:03 | 1:51 (13 bones) | 10:25 rowing | 2:20 (16 bones) |
+
+Why not twice as fast? The sea pushes back with the **square** of your speed: going twice as fast costs four times
+the push. The engine adds about one good-wind sail's worth of push on top of whatever your sail is getting, which
+works out to roughly half again your top speed with the wind, and the whole push when the wind gives nothing.
 
 ## Multiplayer
 
