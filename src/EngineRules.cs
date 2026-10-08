@@ -10,7 +10,7 @@ namespace BoneEngine
         public const string FuelItem = "$item_bonefragments";
 
         /// <summary>High gear's push per physics tick, as a multiple of the boat's own good-wind full-sail push.</summary>
-        public const float EnginePower = 1f;
+        public const float EnginePower = 1.2f;
 
         /// <summary>High-gear seconds one bone lasts on the reference boat; lower gears drain it proportionally slower.</summary>
         public const float BurnSeconds = 15f;
