@@ -18,6 +18,7 @@ repository = "https://thunderstore.io"
 communities = ["valheim"]
 
 [publish.categories]
-# tweaks: changes how the vanilla boats behave. client-side: no server component (the one steering needs it, as
-# PickYourSpirit's caster does). ai-generated: made with AI assistance.
-valheim = ["mods", "client-side", "tweaks", "ai-generated"]
+# tweaks: changes how the vanilla boats behave. transportation, vehicles: a boat mod, tagged like the other boat
+# mods. client-side: no server component. deep-north-update: the game update it is built and tested for
+# (Valheim 1.0). ai-generated: made with AI assistance.
+valheim = ["mods", "client-side", "tweaks", "transportation", "vehicles", "deep-north-update", "ai-generated"]
