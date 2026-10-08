@@ -38,8 +38,8 @@ namespace BoneEngine
             {
                 var ship = player != null ? player.GetControlledShip() : null;
                 var panel = __instance.m_shipHudRoot;
-                var show = ship != null && panel != null && panel.activeSelf && ShipEngine.Hold(ship) != null
-                    && EngineRules.HasEngine(ship.m_sailForceFactor);
+                var show = !EnginePatches.Off && ship != null && panel != null && panel.activeSelf
+                    && ShipEngine.HoldInventory(ship) != null && EngineRules.HasEngine(ship.m_sailForceFactor);
                 if (!show)
                 {
                     if (s_text != null && s_text.gameObject.activeSelf) s_text.gameObject.SetActive(false);

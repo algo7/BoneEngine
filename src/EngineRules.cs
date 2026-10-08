@@ -136,4 +136,21 @@ namespace BoneEngine
             return CountLine(itemName, count) + "\nEngine status: " + status;
         }
     }
+
+    /// <summary>
+    /// Switches a patch off for the session after its first error, so a persistent failure (say, after a game update)
+    /// is logged once and then costs nothing, instead of throwing again every frame or physics tick.
+    /// </summary>
+    internal sealed class Failsafe
+    {
+        public bool Off { get; private set; }
+
+        /// <summary>Records a failure and switches off; true only the first time (log it then).</summary>
+        public bool Trip()
+        {
+            if (Off) return false;
+            Off = true;
+            return true;
+        }
+    }
 }

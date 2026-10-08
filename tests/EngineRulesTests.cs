@@ -105,6 +105,16 @@ internal static partial class Tests
         False(EngineRules.ShouldClaim(steering: true, owner: false, holdClosedSeconds: 60f, ownerStableSeconds: 1.9f), "owner just changed");
     }
 
+    private static void Test_Failsafe_TripsOnceThenStaysOff()
+    {
+        var failsafe = new Failsafe();
+        False(failsafe.Off, "starts on");
+        True(failsafe.Trip(), "first failure: log it");
+        True(failsafe.Off, "then off for the session");
+        False(failsafe.Trip(), "later failures: nothing more to log");
+        True(failsafe.Off, "stays off");
+    }
+
     private static void Test_CountLine()
     {
         Eq("Bone fragments: 12", EngineRules.CountLine("Bone fragments", 12), "the line");
