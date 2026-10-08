@@ -99,12 +99,13 @@ namespace BoneEngine
         }
 
         /// <summary>
-        /// The steering panel's line: the count plus whether the engine pushed this tick. The bone in the engine isn't
-        /// in the count, so "(engine running)" at 0 says the boat is on its last bone.
+        /// The steering panel's text, two short lines (the panel sits at the screen's right edge): the count, then
+        /// whether the engine pushed this tick. The bone in the engine isn't in the count, so "engine running" at 0
+        /// says the boat is on its last bone.
         /// </summary>
         public static string PanelLine(string itemName, int count, bool running)
         {
-            return CountLine(itemName, count) + (running ? " (engine running)" : " (engine idle)");
+            return CountLine(itemName, count) + (running ? "\nengine running" : "\nengine idle");
         }
     }
 }

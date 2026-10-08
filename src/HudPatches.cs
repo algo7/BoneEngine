@@ -15,8 +15,8 @@ namespace BoneEngine
     [HarmonyPatch]
     internal static class HudPatches
     {
-        /// <summary>Gap between the wheel's bottom edge and the line (panel pixels at the game's reference scale); tuned in game.</summary>
-        private const float LineGap = 10f;
+        /// <summary>Gap between the wheel's bottom edge and the text: room for the wind symbol, which orbits the wheel's rim.</summary>
+        private const float LineGap = 34f;
         private const float LineFontSize = 20f;
 
         private static Hud s_hud;
@@ -85,14 +85,17 @@ namespace BoneEngine
             var rect = (RectTransform)line.transform;
             rect.anchorMin = wheel.anchorMin;
             rect.anchorMax = wheel.anchorMax;
-            rect.pivot = new Vector2(0.5f, 1f);
+            // Hang from the wheel's bottom-right corner and grow leftwards: the wheel sits at the screen's right edge.
+            rect.pivot = new Vector2(1f, 1f);
             var wheelBottom = wheel.anchoredPosition.y - wheel.rect.height * (1f - wheel.pivot.y);
-            var wheelCentreX = wheel.anchoredPosition.x + wheel.rect.width * (0.5f - wheel.pivot.x);
-            rect.anchoredPosition = new Vector2(wheelCentreX, wheelBottom - LineGap);
-            rect.sizeDelta = new Vector2(320f, 34f);
+            var wheelRight = wheel.anchoredPosition.x + wheel.rect.width * (1f - wheel.pivot.x);
+            rect.anchoredPosition = new Vector2(wheelRight, wheelBottom - LineGap);
+            rect.sizeDelta = new Vector2(420f, 60f);
             rect.localScale = Vector3.one;
             rect.localRotation = Quaternion.identity;
-            text.alignment = TextAlignmentOptions.Center;
+            text.alignment = TextAlignmentOptions.TopRight;
+            text.textWrappingMode = TextWrappingModes.NoWrap;
+            text.overflowMode = TextOverflowModes.Overflow;
             text.enableAutoSizing = false;
             text.fontSize = LineFontSize;
             text.color = Color.white;
