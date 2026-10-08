@@ -76,4 +76,20 @@ internal static partial class Tests
         Param(water, "p", typeof(Vector3));
         Param(water, "previousAndOut", typeof(WaterVolume).MakeByRefType());
     }
+
+    private static void Test_Game_TheCount()
+    {
+        var hover = Method(typeof(ShipControlls), "GetHoverText");
+        True(hover.IsPublic && hover.ReturnType == typeof(string), "ShipControlls.GetHoverText(): string");
+        Field(typeof(ShipControlls), "m_ship", typeof(Ship));
+        Field(typeof(ShipControlls), "m_attachPoint", typeof(Transform));
+        Field(typeof(ShipControlls), "m_maxUseRange", typeof(float));
+        var hud = Method(typeof(Hud), "UpdateShipHud");
+        Param(hud, "player", typeof(Player));
+        Param(hud, "dt", typeof(float));
+        Field(typeof(Hud), "m_shipHudRoot", typeof(GameObject));
+        Field(typeof(Hud), "m_shipControlsRoot", typeof(GameObject));
+        True(typeof(Hud).GetField("m_healthText", Instance)?.FieldType.Name == "TMP_Text", "Hud.m_healthText is a TMP_Text");
+        Eq(typeof(Ship), typeof(Player).GetMethod("GetControlledShip", Type.EmptyTypes)?.ReturnType, "Player.GetControlledShip()");
+    }
 }

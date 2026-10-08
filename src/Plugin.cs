@@ -29,6 +29,8 @@ namespace BoneEngine
                 Log.LogError("The engine is off: boats are vanilla");
                 return;
             }
+            if (!TryPatch(harmony, typeof(HoverPatches), "rudder text hook")) Log.LogWarning("No bone count on the rudder (the engine still works)");
+            if (!TryPatch(harmony, typeof(HudPatches), "steering panel hook")) Log.LogWarning("No bone count on the steering panel (the engine still works)");
             Log.LogInfo($"{Name} loaded (v{PluginVersion})");
         }
 
