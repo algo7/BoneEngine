@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+- Page: corrected the real-world drag formula in Engine Power (hull area under water, not frontal area).
+
 ## 1.0.1
 
 - If the engine ever runs into an error (for example after a game update), it now switches itself off for the
