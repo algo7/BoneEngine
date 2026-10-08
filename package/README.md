@@ -12,9 +12,7 @@ boat gets an engine that runs on bones. Supports both forward and reverse. Clien
    middle, full sail at full. The push works the same in any wind.
 3. The count shows under the wind compass while you steer, and on the rudder text when you walk up to it.
 
-   ![Under the wind compass: Bone Fragments with Engine status: idle, and with Engine status: active](https://raw.githubusercontent.com/algo7/BoneEngine/main/images/panel.jpg)
-
-   ![The rudder's hover text: Use rudder, with Bone Fragments: 55 under it](https://raw.githubusercontent.com/algo7/BoneEngine/main/images/rudder.jpg)
+   ![Under the wind compass, Bone Fragments with Engine status: idle and with Engine status: active, then the rudder's hover text with Bone Fragments: 55](https://raw.githubusercontent.com/algo7/BoneEngine/main/images/hud.png)
 
 ## How Things Behave
 
