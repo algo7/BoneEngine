@@ -79,10 +79,19 @@ namespace BoneEngine
             return steering && !owner && !holdOpen && ownerStableSeconds >= OwnerStableSeconds;
         }
 
-        /// <summary>The one line the mod shows: the item's name in the player's language, then the count.</summary>
+        /// <summary>The rudder's line: the item's name in the player's language, then the count left in the hold.</summary>
         public static string CountLine(string itemName, int count)
         {
             return itemName + ": " + count;
+        }
+
+        /// <summary>
+        /// The steering panel's line: the count plus whether the engine pushed this tick. The bone in the engine isn't
+        /// in the count, so "(engine running)" at 0 says the boat is on its last bone.
+        /// </summary>
+        public static string PanelLine(string itemName, int count, bool running)
+        {
+            return CountLine(itemName, count) + (running ? " (engine running)" : " (engine idle)");
         }
     }
 }

@@ -88,4 +88,12 @@ internal static partial class Tests
         Eq("Bone fragments: 12", EngineRules.CountLine("Bone fragments", 12), "the line");
         Eq("Bone fragments: 0", EngineRules.CountLine("Bone fragments", 0), "empty hold");
     }
+
+    private static void Test_PanelLine_ShowsTheEngineState()
+    {
+        // The hold count is bones left to burn; the one in the engine isn't in it, so the line says whether it's running.
+        Eq("Bone fragments: 12 (engine running)", EngineRules.PanelLine("Bone fragments", 12, running: true), "pushing");
+        Eq("Bone fragments: 0 (engine running)", EngineRules.PanelLine("Bone fragments", 0, running: true), "last bone in the engine");
+        Eq("Bone fragments: 12 (engine idle)", EngineRules.PanelLine("Bone fragments", 12, running: false), "stopped, or waiting");
+    }
 }

@@ -22,6 +22,7 @@ namespace BoneEngine
         private static Hud s_hud;
         private static TMP_Text s_text;
         private static int s_lastCount = -1;
+        private static bool s_lastRunning;
         private static bool s_off;
 
         [HarmonyPatch(typeof(Hud), "UpdateShipHud")]
@@ -51,10 +52,12 @@ namespace BoneEngine
                     }
                 }
                 var bones = ShipEngine.Bones(ship);
-                if (bones != s_lastCount)
+                var running = ShipEngine.State(ship).Pushing;
+                if (bones != s_lastCount || running != s_lastRunning)
                 {
                     s_lastCount = bones;
-                    s_text.text = EngineRules.CountLine(Localization.instance.Localize(EngineRules.FuelItem), bones);
+                    s_lastRunning = running;
+                    s_text.text = EngineRules.PanelLine(Localization.instance.Localize(EngineRules.FuelItem), bones, running);
                 }
                 if (!s_text.gameObject.activeSelf) s_text.gameObject.SetActive(true);
             }

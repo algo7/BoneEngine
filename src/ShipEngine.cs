@@ -9,6 +9,9 @@ namespace BoneEngine
         /// <summary>High-gear seconds left of the loaded bone; 0 = nothing loaded.</summary>
         public float Remaining;
 
+        /// <summary>The engine pushed on the last tick this game ran for the ship (for the panel line).</summary>
+        public bool Pushing;
+
         /// <summary>Our own water-level lookup cache (vanilla keeps the same kind per sample point).</summary>
         public WaterVolume Water;
 
@@ -102,6 +105,7 @@ namespace BoneEngine
         /// </summary>
         public static void Tick(Ship ship, Rigidbody body, EngineState state, float dt)
         {
+            state.Pushing = false;
             var gear = ship.GetSpeedSetting();
             var fraction = EngineRules.GearFraction(gear);
             if (fraction <= 0f) return;                       // stopped: the loaded bone keeps
@@ -125,6 +129,7 @@ namespace BoneEngine
             var impulse = EngineRules.Impulse(ship.m_sailForceFactor, fraction, body.mass);
             body.AddForceAtPosition(direction * impulse, body.worldCenterOfMass, ForceMode.Impulse);
             state.Remaining = EngineRules.Drain(state.Remaining, dt, fraction);
+            state.Pushing = true;
         }
     }
 }

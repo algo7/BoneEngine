@@ -22,7 +22,11 @@ namespace BoneEngine
                 if (___m_nview == null || !___m_nview.IsValid() || ___m_body == null) return;
                 var state = ShipEngine.State(__instance);
                 ShipEngine.MaybeClaim(__instance, ___m_nview, state, fixedDeltaTime);
-                if (!___m_nview.IsOwner()) return;
+                if (!___m_nview.IsOwner())
+                {
+                    state.Pushing = false;   // another game drives the boat: nothing this one can report as running
+                    return;
+                }
                 ShipEngine.Tick(__instance, ___m_body, state, fixedDeltaTime);
             }
             catch (Exception e)
