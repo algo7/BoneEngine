@@ -21,6 +21,12 @@ namespace BoneEngine
         public float ClaimTimer;
         public long LastOwner;
         public float OwnerStable;
+
+        /// <summary>How long this game has owned the boat (0 while someone else does): gates the first bone.</summary>
+        public float OwnedSeconds;
+
+        /// <summary>How long the hold has been seen closed (0 while open): gates the take-over.</summary>
+        public float HoldClosedSeconds;
     }
 
     /// <summary>
@@ -34,14 +40,27 @@ namespace BoneEngine
 
         public static EngineState State(Ship ship) => s_states.GetValue(ship, _ => new EngineState());
 
-        /// <summary>The boat's hold (the vanilla cargo chest), looked up once per ship; null on the Raft.</summary>
+        /// <summary>
+        /// The boat's hold, looked up once per ship; null on the Raft. Only the vanilla cargo chest counts: the
+        /// Container whose root override is the ship's own ZNetView (hull and hold share one owner, which the engine
+        /// relies on). A chest some other mod bolts onto the deck has its own ZNetView and is cargo, not a fuel tank.
+        /// </summary>
         public static Container Hold(Ship ship)
         {
             var state = State(ship);
             if (!state.HoldLooked)
             {
                 state.HoldLooked = true;
-                state.Hold = ship.GetComponentInChildren<Container>(true);
+                var nview = ship.GetComponent<ZNetView>();
+                if (nview != null)
+                {
+                    foreach (var container in ship.GetComponentsInChildren<Container>(true))
+                    {
+                        if (container.m_rootObjectOverride != nview) continue;
+                        state.Hold = container;
+                        break;
+                    }
+                }
             }
             return state.Hold;
         }
@@ -87,13 +106,15 @@ namespace BoneEngine
             {
                 state.OwnerStable += dt;
             }
+            if (HoldOpen(nview)) state.HoldClosedSeconds = 0f;
+            else state.HoldClosedSeconds += dt;
             state.ClaimTimer += dt;
             if (state.ClaimTimer < EngineRules.ClaimInterval) return;
             state.ClaimTimer = 0f;
             var player = Player.m_localPlayer;
             if (player == null || ship.m_shipControlls == null) return;
             var steering = ship.m_shipControlls.GetUser() == player.GetPlayerID();
-            if (!EngineRules.ShouldClaim(steering, nview.IsOwner(), HoldOpen(nview), state.OwnerStable)) return;
+            if (!EngineRules.ShouldClaim(steering, nview.IsOwner(), state.HoldClosedSeconds, state.OwnerStable)) return;
             nview.ClaimOwnership();
             state.OwnerStable = 0f;
             Plugin.Log.LogDebug($"Took over {ship.name} for the engine (previous owner {owner})");
@@ -106,6 +127,7 @@ namespace BoneEngine
         public static void Tick(Ship ship, Rigidbody body, EngineState state, float dt)
         {
             state.Pushing = false;
+            if (!EngineRules.HasEngine(ship.m_sailForceFactor)) return;   // no sail, no engine: never takes a bone
             var gear = ship.GetSpeedSetting();
             var fraction = EngineRules.GearFraction(gear);
             if (fraction <= 0f) return;                       // stopped: the loaded bone keeps
@@ -121,9 +143,11 @@ namespace BoneEngine
             if (EngineRules.NeedsBone(state.Remaining))
             {
                 var bones = inventory.CountItems(EngineRules.FuelItem, -1, false);
-                if (!EngineRules.CanLoad(hold.IsInUse(), bones)) return;   // IsInUse is owner-local and exact here
-                inventory.RemoveItem(EngineRules.FuelItem, 1, -1, false);  // vanilla save path: everyone sees the count
+                if (!EngineRules.CanLoad(hold.IsInUse(), bones, state.OwnedSeconds)) return;   // IsInUse is owner-local and exact here
+                // Charge before removing: if another mod's chest-change handler throws out of RemoveItem, the bone is
+                // already loaded and the next tick won't take a second one.
                 state.Remaining = EngineRules.BoneSeconds(ship.m_sailForceFactor);   // bigger boat, faster burn
+                inventory.RemoveItem(EngineRules.FuelItem, 1, -1, false);  // vanilla save path: everyone sees the count
             }
             var direction = ship.transform.forward * EngineRules.Direction(gear);
             var impulse = EngineRules.Impulse(ship.m_sailForceFactor, fraction, body.mass);

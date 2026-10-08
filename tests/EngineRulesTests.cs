@@ -70,9 +70,19 @@ internal static partial class Tests
 
     private static void Test_CanLoad()
     {
-        True(EngineRules.CanLoad(holdOpen: false, bones: 1), "closed hold, one bone");
-        False(EngineRules.CanLoad(holdOpen: true, bones: 50), "hold open: never");
-        False(EngineRules.CanLoad(holdOpen: false, bones: 0), "empty hold: never");
+        True(EngineRules.CanLoad(holdOpen: false, bones: 1, ownedSeconds: 1.5f), "closed hold, one bone, settled owner");
+        False(EngineRules.CanLoad(holdOpen: true, bones: 50, ownedSeconds: 60f), "hold open: never");
+        False(EngineRules.CanLoad(holdOpen: false, bones: 0, ownedSeconds: 60f), "empty hold: never");
+        // A fresh owner's copy of the hold refreshes once a second; loading at once could save a friend's chest
+        // edits from a stale copy. Wait out one refresh.
+        False(EngineRules.CanLoad(holdOpen: false, bones: 50, ownedSeconds: 1.4f), "just took the boat: never");
+    }
+
+    private static void Test_HasEngine()
+    {
+        True(EngineRules.HasEngine(0.05f), "a sailing boat");
+        False(EngineRules.HasEngine(0f), "no sail factor (Trailership): no engine, no bones taken");
+        False(EngineRules.HasEngine(-1f), "nonsense factor: no engine");
     }
 
     private static void Test_RunsHere()
@@ -84,12 +94,15 @@ internal static partial class Tests
 
     private static void Test_ShouldClaim_AllFourConditions()
     {
-        True(EngineRules.ShouldClaim(steering: true, owner: false, holdOpen: false, ownerStableSeconds: 2f), "all met");
-        True(EngineRules.ShouldClaim(steering: true, owner: false, holdOpen: false, ownerStableSeconds: 60f), "long stable");
-        False(EngineRules.ShouldClaim(steering: false, owner: false, holdOpen: false, ownerStableSeconds: 2f), "not steering");
-        False(EngineRules.ShouldClaim(steering: true, owner: true, holdOpen: false, ownerStableSeconds: 2f), "already owner");
-        False(EngineRules.ShouldClaim(steering: true, owner: false, holdOpen: true, ownerStableSeconds: 2f), "hold open");
-        False(EngineRules.ShouldClaim(steering: true, owner: false, holdOpen: false, ownerStableSeconds: 1.9f), "owner just changed");
+        True(EngineRules.ShouldClaim(steering: true, owner: false, holdClosedSeconds: 2f, ownerStableSeconds: 2f), "all met");
+        True(EngineRules.ShouldClaim(steering: true, owner: false, holdClosedSeconds: 60f, ownerStableSeconds: 60f), "long stable");
+        False(EngineRules.ShouldClaim(steering: false, owner: false, holdClosedSeconds: 2f, ownerStableSeconds: 2f), "not steering");
+        False(EngineRules.ShouldClaim(steering: true, owner: true, holdClosedSeconds: 2f, ownerStableSeconds: 2f), "already owner");
+        False(EngineRules.ShouldClaim(steering: true, owner: false, holdClosedSeconds: 0f, ownerStableSeconds: 2f), "hold open");
+        // The owner can reopen their own hold with no network round trip, so a pending claim could race the window:
+        // the hold must have been seen closed for a while, not merely closed now.
+        False(EngineRules.ShouldClaim(steering: true, owner: false, holdClosedSeconds: 1.9f, ownerStableSeconds: 60f), "hold just closed");
+        False(EngineRules.ShouldClaim(steering: true, owner: false, holdClosedSeconds: 60f, ownerStableSeconds: 1.9f), "owner just changed");
     }
 
     private static void Test_CountLine()

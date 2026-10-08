@@ -24,9 +24,12 @@ namespace BoneEngine
                 ShipEngine.MaybeClaim(__instance, ___m_nview, state, fixedDeltaTime);
                 if (!___m_nview.IsOwner())
                 {
-                    state.Pushing = false;   // another game drives the boat: nothing this one can report as running
+                    state.Pushing = false;    // another game drives the boat: nothing this one can report as running
+                    state.Remaining = 0f;     // any switch starts the next owner on a fresh bone (at most one per switch)
+                    state.OwnedSeconds = 0f;
                     return;
                 }
+                state.OwnedSeconds += fixedDeltaTime;
                 ShipEngine.Tick(__instance, ___m_body, state, fixedDeltaTime);
             }
             catch (Exception e)

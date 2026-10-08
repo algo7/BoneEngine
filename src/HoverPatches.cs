@@ -23,7 +23,7 @@ namespace BoneEngine
                 var player = Player.m_localPlayer;
                 if (ship == null || player == null || __instance.m_attachPoint == null) return;
                 if (Vector3.Distance(player.transform.position, __instance.m_attachPoint.position) >= __instance.m_maxUseRange) return;   // vanilla's "too far"
-                if (ShipEngine.Hold(ship) == null) return;
+                if (ShipEngine.Hold(ship) == null || !EngineRules.HasEngine(ship.m_sailForceFactor)) return;
                 __result += "\n" + EngineRules.CountLine(Localization.instance.Localize(EngineRules.FuelItem), ShipEngine.Bones(ship));
             }
             catch (Exception e)

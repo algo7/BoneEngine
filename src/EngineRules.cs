@@ -21,6 +21,19 @@ namespace BoneEngine
         /// <summary>The boat's owner must have held it this long before the steerer takes it (closes the open-hold race).</summary>
         public const float OwnerStableSeconds = 2f;
 
+        /// <summary>
+        /// The hold must have been seen closed this long before the steerer takes the boat: the owner reopens their own
+        /// hold with no network round trip, so a window that just closed may already be open again.
+        /// </summary>
+        public const float HoldClosedBeforeClaimSeconds = 2f;
+
+        /// <summary>
+        /// A fresh owner may only take a bone after holding the boat this long: a non-owner's copy of the hold refreshes
+        /// once a second, and removing a bone saves this game's whole copy, so loading at once could write a stale hold
+        /// over a friend's last chest moves.
+        /// </summary>
+        public const float OwnedBeforeLoadSeconds = 1.5f;
+
         /// <summary>How often the steerer checks whether to take the boat.</summary>
         public const float ClaimInterval = 1f;
 
@@ -72,10 +85,19 @@ namespace BoneEngine
             return remaining <= 0f;
         }
 
-        /// <summary>A bone may be taken from the hold: never under an open chest window, never from an empty hold.</summary>
-        public static bool CanLoad(bool holdOpen, int bones)
+        /// <summary>A boat without a working sail has no engine: nothing pushed, no bones taken, no count shown.</summary>
+        public static bool HasEngine(float sailForceFactor)
         {
-            return !holdOpen && bones > 0;
+            return sailForceFactor > 0f;
+        }
+
+        /// <summary>
+        /// A bone may be taken from the hold: never under an open chest window, never from an empty hold, and never
+        /// before this game has owned the boat long enough for its copy of the hold to be fresh.
+        /// </summary>
+        public static bool CanLoad(bool holdOpen, int bones, float ownedSeconds)
+        {
+            return !holdOpen && bones > 0 && ownedSeconds >= OwnedBeforeLoadSeconds;
         }
 
         /// <summary>What's left of the loaded bone after this tick's engine time (dt × gear fraction), floored at 0.</summary>
@@ -86,10 +108,14 @@ namespace BoneEngine
             return left > 0f ? left : 0f;
         }
 
-        /// <summary>The steerer takes the boat only when not owner, nobody has the hold open, and the owner has been stable.</summary>
-        public static bool ShouldClaim(bool steering, bool owner, bool holdOpen, float ownerStableSeconds)
+        /// <summary>
+        /// The steerer takes the boat only when not owner, the hold has been seen closed for a while (not merely closed
+        /// this instant), and the owner has been stable.
+        /// </summary>
+        public static bool ShouldClaim(bool steering, bool owner, float holdClosedSeconds, float ownerStableSeconds)
         {
-            return steering && !owner && !holdOpen && ownerStableSeconds >= OwnerStableSeconds;
+            return steering && !owner && holdClosedSeconds >= HoldClosedBeforeClaimSeconds
+                && ownerStableSeconds >= OwnerStableSeconds;
         }
 
         /// <summary>The rudder's line: the item's name in the player's language, then the count left in the hold.</summary>

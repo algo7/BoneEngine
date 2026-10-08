@@ -61,6 +61,7 @@ internal static partial class Tests
         Param(remove, "amount", typeof(int));
         Param(remove, "worldLevelBased", typeof(bool));
         Field(typeof(ZDOVars), "s_inUse", typeof(int), Static);
+        Field(typeof(Container), "m_rootObjectOverride", typeof(ZNetView));   // the boat hold shares the ship's ZNetView
     }
 
     private static void Test_Game_OwnershipAndWater()
