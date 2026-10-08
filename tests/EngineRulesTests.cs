@@ -52,6 +52,15 @@ internal static partial class Tests
         True(ticks >= 224 && ticks <= 226, $"medium gear: about 225 ticks ({ticks})");
     }
 
+    private static void Test_BoneSeconds_FollowsTheEngineStrength()
+    {
+        // Burn follows the push: the Longship (sail factor 0.05) is the reference; the Karve (0.03) sips, the Drakkar (0.085) gulps.
+        Eq(EngineRules.BurnSeconds, EngineRules.BoneSeconds(0.05f), "Longship: the base time");
+        Eq(EngineRules.BurnSeconds * 0.05f / 0.03f, EngineRules.BoneSeconds(0.03f), "Karve: 5/3 of the base time");
+        Eq(EngineRules.BurnSeconds * 0.05f / 0.085f, EngineRules.BoneSeconds(0.085f), "Drakkar: about 0.59 of the base time");
+        Eq(EngineRules.BurnSeconds, EngineRules.BoneSeconds(0f), "no sail factor: the base time (such a boat never pushes anyway)");
+    }
+
     private static void Test_NeedsBone()
     {
         True(EngineRules.NeedsBone(0f), "nothing loaded");

@@ -123,7 +123,7 @@ namespace BoneEngine
                 var bones = inventory.CountItems(EngineRules.FuelItem, -1, false);
                 if (!EngineRules.CanLoad(hold.IsInUse(), bones)) return;   // IsInUse is owner-local and exact here
                 inventory.RemoveItem(EngineRules.FuelItem, 1, -1, false);  // vanilla save path: everyone sees the count
-                state.Remaining = EngineRules.BurnSeconds;
+                state.Remaining = EngineRules.BoneSeconds(ship.m_sailForceFactor);   // bigger boat, faster burn
             }
             var direction = ship.transform.forward * EngineRules.Direction(gear);
             var impulse = EngineRules.Impulse(ship.m_sailForceFactor, fraction, body.mass);

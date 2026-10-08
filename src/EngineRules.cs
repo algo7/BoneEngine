@@ -12,8 +12,11 @@ namespace BoneEngine
         /// <summary>High gear's push per physics tick, as a multiple of the boat's own good-wind full-sail push.</summary>
         public const float EnginePower = 1f;
 
-        /// <summary>High-gear seconds one bone lasts; lower gears drain it proportionally slower.</summary>
+        /// <summary>High-gear seconds one bone lasts on the reference boat; lower gears drain it proportionally slower.</summary>
         public const float BurnSeconds = 15f;
+
+        /// <summary>The reference boat's sail factor (the Longship's m_sailForceFactor): burn follows push, scaled from here.</summary>
+        public const float ReferenceSailFactor = 0.05f;
 
         /// <summary>The boat's owner must have held it this long before the steerer takes it (closes the open-hold race).</summary>
         public const float OwnerStableSeconds = 2f;
@@ -51,6 +54,16 @@ namespace BoneEngine
         public static bool RunsHere(bool localSteering, bool anyoneSteering)
         {
             return localSteering || !anyoneSteering;
+        }
+
+        /// <summary>
+        /// How long a freshly loaded bone lasts at high gear on this boat: bigger engine (sail factor), bigger appetite,
+        /// so fuel per unit of push is the same everywhere. A boat without a sail factor never pushes; base time for it.
+        /// </summary>
+        public static float BoneSeconds(float sailForceFactor)
+        {
+            if (sailForceFactor <= 0f) return BurnSeconds;
+            return BurnSeconds * ReferenceSailFactor / sailForceFactor;
         }
 
         /// <summary>No bone loaded (the remaining time of the loaded one is used up).</summary>
