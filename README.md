@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/algo7/BoneEngine/actions/workflows/ci.yml/badge.svg)](https://github.com/algo7/BoneEngine/actions/workflows/ci.yml)
 [![Thunderstore](https://img.shields.io/badge/Thunderstore-BoneEngine-blue)](https://thunderstore.io/c/valheim/p/Algo7/BoneEngine/)
+[![Hexium](https://img.shields.io/badge/Hexium-BoneEngine-purple)](https://valheim.hexium.gg/mods/Algo7/BoneEngine)
 
 A [BepInEx](https://github.com/BepInEx/BepInEx) mod for Valheim: bone fragments in a boat's hold are engine fuel.
 Players without the mod only ever see vanilla things.

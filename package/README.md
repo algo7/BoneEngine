@@ -112,6 +112,8 @@ Nothing is saved. Your bones stay in the storage, and the boat is just a boat ag
 
 ## Links
 
+- Available on [Thunderstore](https://thunderstore.io/c/valheim/p/Algo7/BoneEngine/) and
+  [Hexium](https://valheim.hexium.gg/mods/Algo7/BoneEngine)
 - Source and bug reports: https://github.com/algo7/BoneEngine (issues welcome)
 - Changes: the Changelog tab
 - Made with AI assistance.
