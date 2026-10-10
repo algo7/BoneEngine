@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+
+- Added Hexium release workflows.
+
 ## 1.0.2
 
 - Page: corrected the real-world drag formula in Engine Power (hull area under water, not frontal area).
