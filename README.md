@@ -7,8 +7,8 @@
 A [BepInEx](https://github.com/BepInEx/BepInEx) mod for Valheim: bone fragments in a boat's hold are engine fuel.
 Players without the mod only ever see vanilla things.
 
-What it does for players is in [package/README.md](package/README.md), which is also the mod's Thunderstore page.
-Changes: [CHANGELOG.md](CHANGELOG.md).
+What it does for players is in [package/README.md](package/README.md), which is also the mod's Thunderstore and
+Hexium page. Changes: [CHANGELOG.md](CHANGELOG.md).
 
 Made with AI assistance.
 
@@ -65,7 +65,7 @@ approval.
 | `src/ShipEngine.cs` | Per-ship state, the hold, the push, the burn, the take-over |
 | `src/EnginePatches.cs`, `src/HoverPatches.cs`, `src/HudPatches.cs` | The three patches |
 | `tests/` | Unit tests (`make test`) |
-| `package/` | Thunderstore page and icon |
+| `package/` | Mod page (Thunderstore and Hexium) and icon |
 
 ## License
 
